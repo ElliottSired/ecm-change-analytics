@@ -8,7 +8,7 @@ The pipeline implements a Kimball star schema with bridge tables resolving many-
 
 ## To run
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ElliottSired/ecm-change-analytics/blob/main/ECM_Notebook.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ElliottSired/ecm-change-analytics/blob/main/EPC_Change_Management_Analysis.ipynb)
 
     git clone https://github.com/ElliottSired/ecm-change-analytics.git
     cd ecm-change-analytics

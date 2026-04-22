@@ -25,9 +25,9 @@ The architecture utilises a Medallion Pipeline to transform raw data into action
 * Silver Layer — Data is cleansed and structured into a Kimball-style Star Schema using a transaction fact table design — one row per engineering change event, written once at raise and updated as the change progresses through its lifecycle. The fact table is enriched with meaningful business logic and calculations including driving milestone derivation, physical vs documentary classification, and need date buffer logic.
 * Gold Layer — The pipeline culminates in high-performance reporting views organised into four distinct reporting grains:
     * `ChangeID` — Individual change analysis covering stagnation, lead times, raised late detection, and overdue banding.
-    * System — Technical readiness and commissioning alignment.
-    * Contract — Commercial accountability and contractor-specific backlogs.
-    * Building & Zone — Spatial coordination and access classification analysis to identify restricted zone risk and physical congestion.
+    * `System` — Technical readiness and commissioning alignment.
+    * `Contract` — Commercial accountability and contractor-specific backlogs.
+    * `Building & Zone` — Spatial coordination and access classification analysis to identify restricted zone risk and physical congestion.
 
 ### Silver Table Design Principle
 
