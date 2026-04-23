@@ -318,7 +318,18 @@ Cell 4 becomes the complete transformation layer and all silver tables built onc
 
 ### Pipeline Structure
 
-All contract grain analysis is consolidated in a single Cell 14, whereas `ChangeID`, system, building, and zone grain analysis is split logically across dedicated cells. Each of which focuses on a single analytical output. In a production implementation contract grain analysis would follow the same pattern, split into separate cells with each reading from a pre-built `df_contract_enriched` silver table in Cell 4. This would make the contract grain structure consistent with the rest of the notebook and each cell more manageable in length.
+To improve the notebook architecture these are the changes that would be made
+
+Cell 1 — Bronze: synthetic data generation (unchanged)
+Cell 2, 2b — Dimensions (unchanged)
+Cell 3 — Bridge construction (unchanged)
+Cell 4 — Silver layer: fact_enriched, fact_location_exploded, fact_system_enriched (new), fact_contract_enriched (new), fact_zonetype_enriched (expanded)
+Cell 5 — Gold layer: all gold tables materialised in one place (new)
+Cell 6 onwards — Analytical cells, each reading from silver or gold, pure presentation
+
+This produces one cell that builds every silver table the notebook needs. Any analytical cell downstream only needs to filter one of these by status and aggregate and never rebuilds a join chain.
+
+Currently, all contract grain analysis is consolidated in a single Cell 14, whereas `ChangeID`, system, building, and zone grain analysis is split logically across dedicated cells. Each of which focuses on a single analytical output. In a production implementation contract grain analysis would follow the same pattern, split into separate cells with each reading from a pre-built `df_contract_enriched` silver table in Cell 4. This would make the contract grain structure consistent with the rest of the notebook and each cell more manageable in length.
 
 ### Source Data & API Call Structure 
 
