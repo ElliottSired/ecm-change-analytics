@@ -308,7 +308,7 @@ Currently this notebook V1 I class it as emergent architecture. To improve the n
 Cell 1 — Bronze: synthetic data generation (unchanged)
 Cell 2, 2b — Dimensions (unchanged)
 Cell 3 — Bridge construction (unchanged)
-Cell 4 — Silver layer: fact_enriched, fact_location_exploded, fact_system_enriched (new), fact_contract_enriched (new), fact_zonetype_enriched (expanded)
+Cell 4 — Silver layer: `fact_enriched`, `fact_location_exploded`, `fact_system_enriched` (new), `fact_contract_enriched` (new), `fact_zonetype_enriched` (expanded)
 Cell 5 — Gold layer: all gold tables materialised in one place (new)
 Cell 6 onwards — Analytical cells, each reading from silver or gold, pure presentation
 
@@ -318,7 +318,7 @@ Lead time calculations throughout the notebook use calendar day arithmetic via `
 
 ### Status Workflow Analysis
 
-The bronze layer contains three date fields per change — `DateOpened`, `DateValidated`, and `DateClosed` — which together represent three implicit status states: Raised, Validated, and Closed. The current implementation uses only the final Status field — Open or Closed — and treats `DateValidated` as unused after Cell 1.
+The bronze layer contains three date fields per change — `DateOpened`, `DateValidated`, and `DateClosed` — which together represent three implicit status states: `Raised`, `Validated`, and `Closed`. The current implementation uses only the final Status field — `Open` or `Closed` — and treats `DateValidated` as unused after Cell 1.
 In a production implementation two additional derived fields would be calculated in Cell 4:
 * `Validation_Lead_Time` — `DateValidated` - `DateOpened` — the review and approval cycle time
 * `Implementation_Lead_Time` — `DateClosed` - `DateValidated` — the delivery cycle time
