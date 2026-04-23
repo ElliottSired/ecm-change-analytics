@@ -303,6 +303,17 @@ There are inconsistencies as to building silver layer transformation tables with
 * `df_contract_enriched` — `ChangeID` × Contract grain, full population, deduplicated — consumed by Cell 14
 Each analytical cell would then filter the pre-built silver table for the population it needs rather than rebuilding the join chain inline.
 
+Currently this notebook V1 I class it as emergent architecture. To improve the notebook such as V2 architecture these are the changes that would be made:
+
+Cell 1 — Bronze: synthetic data generation (unchanged)
+Cell 2, 2b — Dimensions (unchanged)
+Cell 3 — Bridge construction (unchanged)
+Cell 4 — Silver layer: fact_enriched, fact_location_exploded, fact_system_enriched (new), fact_contract_enriched (new), fact_zonetype_enriched (expanded)
+Cell 5 — Gold layer: all gold tables materialised in one place (new)
+Cell 6 onwards — Analytical cells, each reading from silver or gold, pure presentation
+
+This produces one cell that builds every silver table the notebook needs. Any analytical cell downstream only needs to filter one of these by status and aggregate and never rebuilds a join chain.
+
 Lead time calculations throughout the notebook use calendar day arithmetic via `julianday()` function. A production implementation would calculate lead times in working days — excluding weekends, bank holidays, and project-specific non-working periods — using the `date_dim` table which is already present in the pipeline. This would require a working day flag column added to `date_dim` and a working day count function replacing the current `julianday()` subtraction.
 
 ### Status Workflow Analysis
@@ -315,21 +326,6 @@ Splitting `Days_to_Close` into these two components would identify whether poor 
 
 The result
 Cell 4 becomes the complete transformation layer and all silver tables built once, (`fact_enriched`, system_enriched, contract_enriched, `fact_location_exploded`) and the result is all analytical cells become pure consumers as well as the same pattern applied consistently across every grain. The result is a fully optimized transformation layer where every Silver table is built once and consumed many times, ensuring the analytical cells remain lightweight and the pipeline stays scalable.
-
-### Pipeline Structure
-
-To improve the notebook architecture these are the changes that would be made
-
-Cell 1 — Bronze: synthetic data generation (unchanged)
-Cell 2, 2b — Dimensions (unchanged)
-Cell 3 — Bridge construction (unchanged)
-Cell 4 — Silver layer: fact_enriched, fact_location_exploded, fact_system_enriched (new), fact_contract_enriched (new), fact_zonetype_enriched (expanded)
-Cell 5 — Gold layer: all gold tables materialised in one place (new)
-Cell 6 onwards — Analytical cells, each reading from silver or gold, pure presentation
-
-This produces one cell that builds every silver table the notebook needs. Any analytical cell downstream only needs to filter one of these by status and aggregate and never rebuilds a join chain.
-
-Currently, all contract grain analysis is consolidated in a single Cell 14, whereas `ChangeID`, system, building, and zone grain analysis is split logically across dedicated cells. Each of which focuses on a single analytical output. In a production implementation contract grain analysis would follow the same pattern, split into separate cells with each reading from a pre-built `df_contract_enriched` silver table in Cell 4. This would make the contract grain structure consistent with the rest of the notebook and each cell more manageable in length.
 
 ### Source Data & API Call Structure 
 
