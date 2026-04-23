@@ -298,21 +298,44 @@ Standard change register reporting answers how many changes are open. This pipel
 
 ### Pipeline Architecture 
 
-There are inconsistencies as to building silver layer transformation tables within the pipeline. For example, `fact_enriched` is built once in Cell 4 as the central silver table at `ChangeID` grain. Every analytical cell reads from it. Every join — system, contract, building, zone — starts from `fact_enriched` as the single source of truth. `fact_location_exploded` is a pre-built, full population silver table at `ChangeID` × `SystemCode` × Building × Zone grain. It is built once in Cell 4 also. It is read by every building and zone analytical cell downstream. Status filtering happens inside each consuming cell and the join chain only runs once. This is correct implementation of Medallion layer architecture by building once in the transformation layer and consumed many times downstream in the analytical layer where status and filtering only are applied within each specific cell. Compared to System grain analysis and Contract grain analysis. The system grain silver tables — `df_precision` for open changes, `df_base` for closed changes, `df_system_open` for backlog analysis, and `df_closed_recent` are built inline in the cells that use them rather than pre-built in Cell 4. The same join chain runs multiple times across Cells 9, 10, 11 and 12 for system grain. The contract grain silver table — `df_contract_base` — is built inline in Cell 14 rather than pre-built in Cell 4 also. In a production implementation both system and contract grain silver tables would be built in Cell 4 alongside `fact_location_exploded`:
-* `df_system_enriched` — `ChangeID` × `SystemCode` grain, full population, all columns — consumed by Cells 9, 10, 11, 12, 13
-* `df_contract_enriched` — `ChangeID` × Contract grain, full population, deduplicated — consumed by Cell 14
-Each analytical cell would then filter the pre-built silver table for the population it needs rather than rebuilding the join chain inline.
+There are inconsistencies in how silver-layer transformation logic is currently structured within the pipeline.
 
-Currently this notebook V1 I class it as emergent architecture. To improve the notebook such as V2 architecture these are the changes that would be made:
+For example, fact_enriched is correctly built once in Cell 4 as the central silver fact table at ChangeID grain. It serves as the single source of truth for all downstream analytical logic. Every analytical cell reads from this table, and all further joins — system, contract, building, and zone — originate from it.
 
-Cell 1 — Bronze: synthetic data generation (unchanged)
-Cell 2, 2b — Dimensions (unchanged)
-Cell 3 — Bridge construction (unchanged)
-Cell 4 — Silver layer: `fact_enriched`, `fact_location_exploded`, `fact_system_enriched` (new), `fact_contract_enriched` (new), `fact_zonetype_enriched` (expanded)
-Cell 5 — Gold layer: all gold tables materialised in one place (new)
-Cell 6 onwards — Analytical cells, each reading from silver or gold, pure presentation
+Similarly, fact_location_exploded is correctly implemented as a pre-built silver dataset at ChangeID × SystemCode × Building × Zone grain. It is also materialised once in Cell 4 and reused across all downstream spatial analysis. This enables multi-grain analysis without requiring repeated join logic in analytical cells.
 
-This produces one cell that builds every silver table the notebook needs. Any analytical cell downstream only needs to filter one of these by status and aggregate and never rebuilds a join chain.
+Status filtering (e.g. open, closed, recent) is correctly applied within analytical cells as a downstream slicing operation on top of the silver fact tables, rather than being encoded as separate transformation tables.
+
+However, there is inconsistency in how system-level and contract-level grains are handled. At present, system-level analysis is implemented through repeated inline transformations within analytical cells (e.g. open changes, closed changes, backlog views, recent changes). These are not separate silver tables but dynamically derived subsets of fact_enriched. As a result, the same join logic and filtering patterns are repeated across multiple cells (Cells 9–13).
+
+Similarly, contract-level analysis (df_contract_base) is constructed inline in Cell 14 rather than being pre-materialised in the silver layer.
+
+In a production-grade implementation, these would be centralised in the silver layer as reusable, full-grain datasets:
+
+fact_system_enriched — ChangeID × SystemCode grain, full population, all attributes
+→ consumed by system-level analytical cells (open, closed, backlog, recent)
+fact_contract_enriched — ChangeID × Contract grain, full population, deduplicated
+→ consumed by contract-level analytical cells
+
+Each analytical cell would then apply filters (e.g. status, time windows) and perform aggregation on these pre-built silver datasets, rather than reconstructing join chains repeatedly.
+
+V2 Architecture Improvement
+
+Currently, this notebook represents an emergent architecture, where core silver transformations are partially centralised but some grain-level derivations are still embedded within analytical cells.
+
+In a V2 production design, the structure would be fully standardised:
+
+Cell 1 — Bronze layer: synthetic data generation (unchanged)
+Cell 2, 2b — Dimensions: unchanged
+Cell 3 — Bridge construction: unchanged
+Cell 4 — Silver layer (fully centralised transformations):
+fact_enriched
+fact_location_exploded
+fact_system_enriched
+fact_contract_enriched
+fact_zonetype_enriched
+Cell 5 — Gold layer: all business-facing aggregations materialised centrally
+Cell 6 onwards — Analytical layer: pure consumption layer (filtering + aggregation only)
 
 Lead time calculations throughout the notebook use calendar day arithmetic via `julianday()` function. A production implementation would calculate lead times in working days — excluding weekends, bank holidays, and project-specific non-working periods — using the `date_dim` table which is already present in the pipeline. This would require a working day flag column added to `date_dim` and a working day count function replacing the current `julianday()` subtraction.
 
