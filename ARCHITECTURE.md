@@ -136,7 +136,7 @@ Chart 3 — Closure Lag by Raise Cohort Groups closed changes by the month they 
 
 Four styled tables accompany the charts:
 
-Raised Late Summary — shown before the charts as a data quality signal. One row per Level × Impact Type combination showing total changes, count raised late, and percentage raised late. Highlights which categories of change are most frequently raised after their need date — a process governance metric rather than a performance metric.
+Raised Late Summary — shown before the charts as a data quality signal. One row per `Level` × Impact Type combination showing total changes, count raised late, and percentage raised late. Highlights which categories of change are most frequently raised after their need date — a process governance metric rather than a performance metric.
 
 Overdue Banding Detail — accompanies Chart 2. One row per Level × Impact Type × Overdue Band showing the count of changes in each band. Gives the precise numbers behind the stacked bars.
 
@@ -147,7 +147,7 @@ Cohort Summary — accompanies Chart 3. One row per raise cohort per level showi
 
 ### Cell 9 — System Lead Time by Milestone Section
 
-This cell builds a silver table by joining `fact_enriched` to `systems_bridge`, `systems_master`, and `df_milestones` via LEFT JOIN, filtered to closed changes only.
+This cell builds a silver table by joining `fact_enriched` to `systems_bridge`, `systems_master`, and `df_milestones` via `LEFT JOIN`, filtered to `closed` changes only.
 
 Two charts are produced — one for physical impacts and one for non-physical.
 
@@ -170,11 +170,11 @@ This chart complements Cell 9 — Cell 9 demonstrates historical lead time perfo
 
 ### Cell 10 System Backlog
 
-Cell 10 produces two stacked bar charts — physical and non-physical — split by level showing a count of `ChangeID` per system grouped by milestone. `fact_enriched` is filtered by status prior to a LEFT JOIN of `systems_bridge` and system_anchor to create a silver table `df_system_open` which feeds both charts. Systems are sorted M1 through M4 by milestone deadline then by total backlog within each group — so the chart reads left to right in order of programme urgency.
+Cell 10 produces two stacked bar charts — physical and non-physical — split by level showing a count of `ChangeID` per system grouped by milestone. `fact_enriched` is filtered by status prior to a `LEFT JOIN` of `systems_bridge` and `system_anchor` to create a silver table `df_system_open` which feeds both charts. Systems are sorted M1 through M4 by milestone deadline then by total backlog within each group — so the chart reads left to right in order of programme urgency.
 
 ### Cell 11 — System Stagnation, Milestone Countdown & Gold Tables
 
-This cell is the most analytically rich cell in the notebook. Two silver tables are built before any plotting function runs. Both follow the same pattern — `fact_enriched` is filtered by status first to define the population, then LEFT JOIN through `systems_bridge` and `systems_master` to produce `ChangeID` × `SystemCode` grain. `df_precision` contains open changes and feeds the stagnation scoring, countdown chart, and gold tables. `df_closed_recent` contains changes closed in the last 90 days and feeds the current closure rate calculation used in the `On_Track` flag.
+This cell is the most analytically rich cell in the notebook. Two silver tables are built before any plotting function runs. Both follow the same pattern — `fact_enriched` is filtered by status first to define the population, then `LEFT JOIN` through `systems_bridge` and `systems_master` to produce `ChangeID` × `SystemCode` grain. `df_precision` contains open changes and feeds the stagnation scoring, countdown chart, and gold tables. `df_closed_recent` contains changes closed in the last 90 days and feeds the current closure rate calculation used in the `On_Track` flag.
 
 System Days to Milestone — horizontal bar chart showing days remaining to each system's milestone deadline. Bar colour reflects both urgency and backlog size — overdue systems with high change counts appear darkest red, healthy systems with low counts appear green. The Level, 2, and 3 breakdown is annotated on each bar. Systems are grouped by milestone in deadline order so the chart reads top to bottom from most urgent to least urgent.
 
@@ -217,12 +217,12 @@ This chart visualises why changes are being raised against each system.
 ### Cell 14 — Contract Grain Analysis
 
 Cell 14 applies the same analytical pattern as the system grain cells — backlog, lead time, stagnation, readiness, and velocity — at contract grain. All contract grain analysis is consolidated in a single cell rather than split across multiple cells as with system grain.
-A silver table `df_contract_base` is built inline by joining `fact_enriched` through `systems_bridge` to `contract_dim`, deduplicated on `ChangeID` × Contract. This is then split into open and closed populations for the respective analyses.
+A silver table `df_contract_base` is built inline by joining `fact_enriched` through `systems_bridge` to `contract_dim`, deduplicated on `ChangeID` × `Contract`. This is then split into open and closed populations for the respective analyses.
 Four outputs are produced:
 
-Contract Backlog — stacked bar chart showing open changes per contract by level. Physical and non-physical produced separately.
+Contract Backlog — stacked bar chart showing `open`/`validated` changes per `contract` by `level`. `Physical` and `non-physical` produced separately.
 
-Contract Lead Time — range bar chart showing historical lead time per contract per level for closed changes. Sorted worst average lead time first. Colour min-max normalised within level — slowest contract darkest red, fastest darkest green.
+Contract Lead Time — range bar chart showing historical lead time per `contract` per `level` for closed changes. Sorted worst average lead time first. Colour min-max normalised within level — slowest contract darkest red, fastest darkest green.
 
 Contract Stagnation — range bar chart showing age distribution of open changes per contract per level. Sorted worst stagnation score first.
 
@@ -233,7 +233,7 @@ In a production implementation Cell 14 would be split into separate cells follow
 
 ### Cell 15 — Building Backlog 
 
-Two stacked bar charts — physical and non-physical — showing open changes per building by level.
+Two stacked bar charts — `physical` and `non-physical` — showing `open` or `validated` changes per building by level.
 
 ### Cell 16 — Building Analysis 
 
@@ -252,11 +252,11 @@ Dropdown widget with All Buildings RAG bar chart and single building drilldown. 
 
 ### Cells 18-20 — Zone Type Grain Analysis
 
-Zone type grain also reads from `fact_location_exploded`, deduplicated on `ChangeID` × `Zone_Type`. Whole-building assignments where `Zone_Type` is NULL are filled as 'Whole Building' rather than dropped.
+Zone type grain also reads from `fact_location_exploded`, deduplicated on `ChangeID` × `Zone_Type`. Whole-building assignments where `Zone_Type` is `NULL` are filled as `Whole Building` rather than dropped.
 
 ### Cell 18 — Zone Type Backlog 
 
-Two stacked bar charts — physical and non-physical — showing open changes per zone type by level. Zone types are access classifications — Restricted, Controlled, Operational, Critical, and Whole Building.
+Two stacked bar charts — `physical` and `non-physical` — showing open changes per zone type by level. Zone types are access classifications — `Restricted`, `Controlled`, `Operational`, `Critical`, and `Whole Building`.
 
 ### Cell 19 — Zone Type Analysis 
 
@@ -280,7 +280,7 @@ The pipeline was run against a synthetic change register of 15,000 engineering c
 
 ### Open backlog is concentrated against near-term and overdue milestones
 
-Of the 708 open and validated changes at the reporting date — 103 open and 605 validated — 189 drive M1, a milestone with a deadline of 30 June 2025 which passed 217 days before the reporting date. A further 85 drive M2 with the 31 March 2026 deadline 57 days away. The 386 changes driving M3 and 48 driving M4 represent the healthier tail of the backlog with 363 and 697 days remaining respectively. The concentration of unresolved work against M1 and M2 is the most commercially urgent signal in the dataset.
+Of the 708 open and validated changes at the reporting date — 189 drive M1, a milestone with a deadline of 30 June 2025 which passed 217 days before the reporting date. A further 85 drive M2 with the 31 March 2026 deadline 57 days away. The 386 changes driving M3 and 48 driving M4 represent the healthier tail of the backlog with 363 and 697 days remaining respectively. The concentration of unresolved work against M1 and M2 is the most commercially urgent signal in the dataset.
 
 ### A significant proportion of closed changes closed late
 
@@ -288,7 +288,7 @@ Of the 708 open and validated changes at the reporting date — 103 open and 605
 
 ### Stagnation is concentrated in a small number of systems
 
-The five systems with the highest open backlogs — ABB with 23 open changes averaging 211 days age, DEG with 16 averaging 209 days, XYZ with 14 averaging 188 days, CDE with 15 averaging 159 days, and LMN with 15 averaging 153 days — collectively carry the oldest and most concentrated unresolved work. The stagnation scoring in the pipeline weights open changes by age and level priority, surfacing these systems as the highest intervention priority before their milestone deadlines close the window for recovery.
+The five systems with the highest open backlogs — `ABB`, `DEG`, `XYZ`,`CDE` and `LMN`. These collectively carry the oldest and most concentrated unresolved work. The stagnation scoring in the pipeline weights open changes by age and level priority, surfacing these systems as the highest intervention priority before their milestone deadlines close the window for recovery.
 
 ### The pipeline moves reporting beyond headline counts
 
@@ -300,24 +300,22 @@ Standard change register reporting answers how many changes are open. This pipel
 
 There are inconsistencies in how silver-layer transformation logic is currently structured within the pipeline.
 
-For example, fact_enriched is correctly built once in Cell 4 as the central silver fact table at ChangeID grain. It serves as the single source of truth for all downstream analytical logic. Every analytical cell reads from this table, and all further joins — system, contract, building, and zone — originate from it.
+For example, fact_enriched is correctly built once in Cell 4 as the central silver fact table at ChangeID grain. It serves as the single source of truth for all downstream analytical logic. Every analytical cell reads from this table, and all further joins — `system` `contract`, `building`, and `zone` — originate from it.
 
-Similarly, fact_location_exploded is correctly implemented as a pre-built silver dataset at ChangeID × SystemCode × Building × Zone grain. It is also materialised once in Cell 4 and reused across all downstream spatial analysis. This enables multi-grain analysis without requiring repeated join logic in analytical cells.
+Similarly, `fact_location_exploded` is correctly implemented as a pre-built silver dataset at `ChangeID` × `SystemCode` × `Building` × `Zone grain`. It is also materialised once in Cell 4 and reused across all downstream spatial analysis. This enables multi-grain analysis without requiring repeated join logic in analytical cells.
 
-Status filtering (e.g. open, closed, recent) is correctly applied within analytical cells as a downstream slicing operation on top of the silver fact tables, rather than being encoded as separate transformation tables.
+Status filtering (e.g. `open`, `closed`) is correctly applied within analytical cells as a downstream slicing operation on top of the silver fact tables, rather than being encoded as separate transformation tables.
 
-However, there is inconsistency in how system-level and contract-level grains are handled. At present, system-level analysis is implemented through repeated inline transformations within analytical cells (e.g. open changes, closed changes, backlog views, recent changes). These are not separate silver tables but dynamically derived subsets of fact_enriched. As a result, the same join logic and filtering patterns are repeated across multiple cells (Cells 9–13).
+However, there is inconsistency in how system-level and contract-level grains are handled. At present, system-level analysis is implemented through repeated inline transformations within analytical cells (e.g. open changes, closed changes, backlog views, recent changes). These are not separate silver tables but dynamically derived subsets of `fact_enriched`. As a result, the same join logic and filtering patterns are repeated across multiple cells (Cells 9–13).
 
-Similarly, contract-level analysis (df_contract_base) is constructed inline in Cell 14 rather than being pre-materialised in the silver layer.
+Similarly, contract-level analysis, `df_contract_base` is constructed inline in Cell 14 rather than being pre-materialised in the silver layer.
 
 In a production-grade implementation, these would be centralised in the silver layer as reusable, full-grain datasets:
 
-fact_system_enriched — ChangeID × SystemCode grain, full population, all attributes
-→ consumed by system-level analytical cells (open, closed, backlog, recent)
-fact_contract_enriched — ChangeID × Contract grain, full population, deduplicated
-→ consumed by contract-level analytical cells
+`fact_system_enriched` — `ChangeID` × `SystemCode` grain, full population, all attributes, consumed by system-level analytical cells (`open`, `closed`)
+`fact_contract_enriched` — `ChangeID` × `Contract grain`, full population, deduplicated, consumed by contract-level analytical cells
 
-Each analytical cell would then apply filters (e.g. status, time windows) and perform aggregation on these pre-built silver datasets, rather than reconstructing join chains repeatedly.
+Each analytical cell would then apply filters (e.g. `status`) and perform aggregation on these pre-built silver datasets, rather than reconstructing join chains repeatedly.
 
 V2 Architecture Improvement
 
@@ -329,11 +327,11 @@ Cell 1 — Bronze layer: synthetic data generation (unchanged)
 Cell 2, 2b — Dimensions: unchanged
 Cell 3 — Bridge construction: unchanged
 Cell 4 — Silver layer (fully centralised transformations):
-fact_enriched
-fact_location_exploded
-fact_system_enriched
-fact_contract_enriched
-fact_zonetype_enriched
+`fact_enriched`
+`fact_location_exploded`
+`fact_system_enriched`
+`fact_contract_enriched`
+`fact_zonetype_enriched`
 Cell 5 — Gold layer: all business-facing aggregations materialised centrally
 Cell 6 onwards — Analytical layer: pure consumption layer (filtering + aggregation only)
 
@@ -348,7 +346,7 @@ In a production implementation two additional derived fields would be calculated
 Splitting `Days_to_Close` into these two components would identify whether poor lead time performance is driven by slow governance — a review process problem — or slow delivery — a contractor or resource problem. The distinction matters for intervention — the first requires process improvement, the second requires resource or commercial action.
 
 The result
-Cell 4 becomes the complete transformation layer and all silver tables built once, (`fact_enriched`, system_enriched, contract_enriched, `fact_location_exploded`) and the result is all analytical cells become pure consumers as well as the same pattern applied consistently across every grain. The result is a fully optimized transformation layer where every Silver table is built once and consumed many times, ensuring the analytical cells remain lightweight and the pipeline stays scalable.
+Cell 4 becomes the complete transformation layer and all silver tables built once, (`fact_enriched`, `system_enriched`, `contract_enriched`, `fact_location_exploded`) and the result is all analytical cells become pure consumers as well as the same pattern applied consistently across every grain. The result is a fully optimized transformation layer where every Silver table is built once and consumed many times, ensuring the analytical cells remain lightweight and the pipeline stays scalable.
 
 ### Source Data & API Call Structure 
 
