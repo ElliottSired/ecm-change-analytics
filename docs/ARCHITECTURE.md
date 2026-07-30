@@ -84,7 +84,7 @@ The key business logic applied:
 * `Days_Until_Need` — days remaining from `SIM_TODAY` to `Actual_Need_Date` for open changes
 * `Days_Overdue` — how late a closed change was relative to its need date
 
-The result is `fact_enriched` — the central silver table at `ChangeID` grain that every analytical cell reads from. Also in this cell `fact_location_exploded` is pre-built at `ChangeID` × System × Building × Zone grain, running the full location join chain once and storing the result for all building and zone cells downstream.
+The result is `fact_enriched` — the central silver table at `ChangeID` grain that every analytical cell reads from. Also in this cell `fact_location_exploded` is pre-built at `ChangeID` × `System` × `Building` × `Zone` grain, running the full location join chain once and storing the result for all building and zone cells downstream.
 
 ### Cell 5 — Inflow, Outflow and Average Lead Time
 

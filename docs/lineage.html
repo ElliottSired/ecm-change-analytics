@@ -1,0 +1,161 @@
+<!doctype html>
+<html><head><meta charset="utf-8"/><title>ECM_Change_Management — Lineage Catalog</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --bg: #f6f4ef; --surface: #ffffff; --ink: #1c2024; --ink-dim: #6b6f76;
+    --border: #e2ddd1; --accent: #3d6b7d; --bronze: #a8622f; --bronze-tint: #f3e6da;
+    --silver: #5f6a76; --silver-tint: #e9ebed; --gold: #a37f27; --gold-tint: #f5edd8;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10141a; --surface: #171c24; --ink: #e9e6df; --ink-dim: #9aa0aa;
+      --border: #262d38; --accent: #6fa9be; --bronze: #c97d44; --bronze-tint: #2e2119;
+      --silver: #97a2ae; --silver-tint: #1f242c; --gold: #d1ab52; --gold-tint: #2c2617;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--sans); margin: 0; padding: 48px 24px 80px; }
+  .page { max-width: 1100px; margin: 0 auto; }
+  .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin: 0 0 10px; }
+  h1 { font-family: var(--mono); font-size: clamp(26px, 4vw, 36px); font-weight: 600; letter-spacing: -0.01em; margin: 0 0 12px; text-wrap: balance; }
+  .lede { color: var(--ink-dim); font-size: 15px; line-height: 1.6; max-width: 62ch; margin: 0 0 32px; }
+  .lede code { font-family: var(--mono); font-size: 0.92em; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 40px; }
+  .stat { background: var(--surface); padding: 16px 18px; }
+  .stat .n { font-family: var(--mono); font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .stat .l { font-size: 12px; color: var(--ink-dim); margin-top: 2px; }
+  .stat.bronze .n { color: var(--bronze); } .stat.silver .n { color: var(--silver); } .stat.gold .n { color: var(--gold); }
+  section { margin-bottom: 40px; }
+  h2 { font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-dim); font-weight: 600; margin: 0 0 16px; display: flex; align-items: center; gap: 10px; }
+  h2::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .graph-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; overflow-x: auto; }
+  .legend { display: flex; gap: 20px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); font-family: var(--mono); font-size: 12px; color: var(--ink-dim); }
+  .legend .chip { display: inline-flex; align-items: center; gap: 6px; }
+  .legend .dot { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
+  table { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; font-size: 13.5px; }
+  .table-wrap { overflow-x: auto; border-radius: 12px; }
+  thead th { text-align: left; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-dim); font-weight: 600; padding: 12px 16px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  tbody td { padding: 11px 16px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  td.name { font-family: var(--mono); font-weight: 500; }
+  td.rows { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+  td.sources { color: var(--ink-dim); font-size: 12.5px; }
+  td.sources .src { font-family: var(--mono); background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; margin: 1px 3px 1px 0; display: inline-block; }
+  .pill { font-family: var(--mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; padding: 3px 8px; border-radius: 20px; display: inline-block; }
+  .pill.bronze { background: var(--bronze-tint); color: var(--bronze); }
+  .pill.silver { background: var(--silver-tint); color: var(--silver); }
+  .pill.gold { background: var(--gold-tint); color: var(--gold); }
+  .note { font-size: 13px; color: var(--ink-dim); line-height: 1.6; max-width: 68ch; }
+  .note code { font-family: var(--mono); font-size: 0.94em; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; }
+</style></head>
+<body>
+<div class="page">
+  <p class="eyebrow">Lineage catalog — read-only</p>
+  <h1>ECM_Change_Management</h1>
+  <p class="lede">Every table below was written by <code>write_layer()</code>, which pairs each
+  <code>.parquet</code> file with a <code>.json</code> manifest declaring what it was built from.
+  This page is that manifest data, read back and laid out.</p>
+  <div class="stats">
+    <div class="stat bronze"><div class="n">8</div><div class="l">bronze tables</div></div>
+    <div class="stat silver"><div class="n">2</div><div class="l">silver tables</div></div>
+    <div class="stat gold"><div class="n">16</div><div class="l">gold tables</div></div>
+    <div class="stat"><div class="n">26</div><div class="l">total, one pipeline</div></div>
+  </div>
+  <section>
+    <h2>Dependency graph</h2>
+    <div class="graph-wrap">
+      <pre class="mermaid">graph LR
+  building_dim["building_dim<br/>10 rows"]:::bronze
+  commissioning_milestones["commissioning_milestones<br/>4 rows"]:::bronze
+  contract_dim["contract_dim<br/>26 rows"]:::bronze
+  date_dim["date_dim<br/>2,556 rows"]:::bronze
+  fact_table["fact_table<br/>15,000 rows"]:::bronze
+  system_location_bridge["system_location_bridge<br/>36 rows"]:::bronze
+  systems_master["systems_master<br/>26 rows"]:::bronze
+  zone_dim["zone_dim<br/>16 rows"]:::bronze
+  fact_enriched["fact_enriched<br/>15,000 rows"]:::silver
+  fact_table --> fact_enriched
+  contract_dim --> fact_enriched
+  commissioning_milestones --> fact_enriched
+  systems_master --> fact_enriched
+  fact_location_exploded["fact_location_exploded<br/>37,435 rows"]:::silver
+  fact_enriched --> fact_location_exploded
+  system_location_bridge --> fact_location_exploded
+  building_dim --> fact_location_exploded
+  zone_dim --> fact_location_exploded
+  gold_building_leadtime_non_physical["gold_building_leadtime_non_physical<br/>9 rows"]:::gold
+  fact_location_exploded --> gold_building_leadtime_non_physical
+  gold_building_leadtime_physical["gold_building_leadtime_physical<br/>9 rows"]:::gold
+  fact_location_exploded --> gold_building_leadtime_physical
+  gold_building_stagnation_non_physical["gold_building_stagnation_non_physical<br/>9 rows"]:::gold
+  fact_location_exploded --> gold_building_stagnation_non_physical
+  gold_building_stagnation_physical["gold_building_stagnation_physical<br/>9 rows"]:::gold
+  fact_location_exploded --> gold_building_stagnation_physical
+  gold_contract_leadtime_non_physical["gold_contract_leadtime_non_physical<br/>6 rows"]:::gold
+  fact_enriched --> gold_contract_leadtime_non_physical
+  contract_dim --> gold_contract_leadtime_non_physical
+  gold_contract_leadtime_physical["gold_contract_leadtime_physical<br/>6 rows"]:::gold
+  fact_enriched --> gold_contract_leadtime_physical
+  contract_dim --> gold_contract_leadtime_physical
+  gold_contract_stagnation_non_physical["gold_contract_stagnation_non_physical<br/>6 rows"]:::gold
+  fact_enriched --> gold_contract_stagnation_non_physical
+  contract_dim --> gold_contract_stagnation_non_physical
+  gold_contract_stagnation_physical["gold_contract_stagnation_physical<br/>6 rows"]:::gold
+  fact_enriched --> gold_contract_stagnation_physical
+  contract_dim --> gold_contract_stagnation_physical
+  gold_master_action_list["gold_master_action_list<br/>708 rows"]:::gold
+  fact_enriched --> gold_master_action_list
+  gold_overdue_changes["gold_overdue_changes<br/>671 rows"]:::gold
+  fact_enriched --> gold_overdue_changes
+  gold_system_non_physical["gold_system_non_physical<br/>26 rows"]:::gold
+  fact_enriched --> gold_system_non_physical
+  gold_system_physical["gold_system_physical<br/>26 rows"]:::gold
+  fact_enriched --> gold_system_physical
+  gold_zonetype_leadtime_non_physical["gold_zonetype_leadtime_non_physical<br/>5 rows"]:::gold
+  fact_location_exploded --> gold_zonetype_leadtime_non_physical
+  gold_zonetype_leadtime_physical["gold_zonetype_leadtime_physical<br/>5 rows"]:::gold
+  fact_location_exploded --> gold_zonetype_leadtime_physical
+  gold_zonetype_stagnation_non_physical["gold_zonetype_stagnation_non_physical<br/>5 rows"]:::gold
+  fact_location_exploded --> gold_zonetype_stagnation_non_physical
+  gold_zonetype_stagnation_physical["gold_zonetype_stagnation_physical<br/>5 rows"]:::gold
+  fact_location_exploded --> gold_zonetype_stagnation_physical
+  classDef bronze fill:#cd7f32,color:#fff
+  classDef silver fill:#adb5bd,color:#000
+  classDef gold fill:#d4af37,color:#000</pre>
+      <div class="legend">
+        <span class="chip"><span class="dot" style="background:#a8622f"></span>bronze</span>
+        <span class="chip"><span class="dot" style="background:#5f6a76"></span>silver</span>
+        <span class="chip"><span class="dot" style="background:#a37f27"></span>gold</span>
+      </div>
+    </div>
+  </section>
+  <section>
+    <h2>Every table</h2>
+    <div class="table-wrap">
+      <table><thead><tr><th>Layer</th><th>Table</th><th>Rows</th><th>Built from</th></tr></thead>
+      <tbody id="table-body"></tbody></table>
+    </div>
+  </section>
+  <p class="note">Regenerate this page any time by re-running your data generator and notebook,
+  then this script — nothing here is hand-maintained.</p>
+</div>
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: 'base' });
+  const data = [{"table": "building_dim", "layer": "bronze", "built_from": [], "built_at": "2026-07-30T14:16:41.621168+00:00", "rows": 10, "columns": ["Building_ID", "Building_Name", "Building_Type"]}, {"table": "commissioning_milestones", "layer": "bronze", "built_from": [], "built_at": "2026-07-30T14:16:41.606537+00:00", "rows": 4, "columns": ["Milestone_ID", "Milestone_Name", "Project_Target_Date"]}, {"table": "contract_dim", "layer": "bronze", "built_from": [], "built_at": "2026-07-30T14:16:41.605101+00:00", "rows": 26, "columns": ["SystemCode", "Contract"]}, {"table": "date_dim", "layer": "bronze", "built_from": [], "built_at": "2026-07-30T14:16:41.619593+00:00", "rows": 2556, "columns": ["Date", "Date_Key", "Year", "Month_Name"]}, {"table": "fact_table", "layer": "bronze", "built_from": [], "built_at": "2026-07-30T14:16:41.603464+00:00", "rows": 15000, "columns": ["ChangeID", "AssumedMilestone", "Level", "DateOpened", "DateValidated", "DateClosed", "TargetClosureDate", "Status", "SystemsImpacted", "Reason", "PotentialConsequences"]}, {"table": "system_location_bridge", "layer": "bronze", "built_from": [], "built_at": "2026-07-30T14:16:41.628121+00:00", "rows": 36, "columns": ["SystemCode", "Building_ID", "Zone_ID"]}, {"table": "systems_master", "layer": "bronze", "built_from": [], "built_at": "2026-07-30T14:16:41.611443+00:00", "rows": 26, "columns": ["SystemCode", "Milestone_ID"]}, {"table": "zone_dim", "layer": "bronze", "built_from": [], "built_at": "2026-07-30T14:16:41.622632+00:00", "rows": 16, "columns": ["Zone_ID", "Building_ID", "Zone_Name", "Zone_Type"]}, {"table": "fact_enriched", "layer": "silver", "built_from": ["fact_table", "contract_dim", "commissioning_milestones", "systems_master"], "built_at": "2026-07-30T16:12:53.343996+00:00", "rows": 15000, "columns": ["ChangeID", "AssumedMilestone", "Level", "DateOpened", "DateValidated", "DateClosed", "TargetClosureDate", "Status", "SystemsImpacted", "Reason", "PotentialConsequences", "Physical_Impacts", "Driving_System", "Driving_Milestone", "Milestone_Name", "Milestone_Need_Date", "Actual_Need_Date", "Days_to_Close", "Current_Age_Days", "Days_Until_Need", "Days_Overdue"]}, {"table": "fact_location_exploded", "layer": "silver", "built_from": ["fact_enriched", "system_location_bridge", "building_dim", "zone_dim"], "built_at": "2026-07-30T16:12:53.393975+00:00", "rows": 37435, "columns": ["ChangeID", "Status", "Level", "Physical_Impacts", "AssumedMilestone", "DateOpened", "DateClosed", "Current_Age_Days", "Days_to_Close", "SystemCode", "Building_ID", "Building_Name", "Building_Type", "Zone_ID", "Zone_Name", "Zone_Type"]}, {"table": "gold_building_leadtime_non_physical", "layer": "gold", "built_from": ["fact_location_exploded"], "built_at": "2026-07-30T16:33:43.796925+00:00", "rows": 9, "columns": ["Building_Name", "Avg_Lead_Time", "Closed_Count"]}, {"table": "gold_building_leadtime_physical", "layer": "gold", "built_from": ["fact_location_exploded"], "built_at": "2026-07-30T16:33:43.207995+00:00", "rows": 9, "columns": ["Building_Name", "Avg_Lead_Time", "Closed_Count"]}, {"table": "gold_building_stagnation_non_physical", "layer": "gold", "built_from": ["fact_location_exploded"], "built_at": "2026-07-30T16:33:44.910059+00:00", "rows": 9, "columns": ["Building_Name", "Total_Score", "Total_Open", "Avg_Age"]}, {"table": "gold_building_stagnation_physical", "layer": "gold", "built_from": ["fact_location_exploded"], "built_at": "2026-07-30T16:33:44.355655+00:00", "rows": 9, "columns": ["Building_Name", "Total_Score", "Total_Open", "Avg_Age"]}, {"table": "gold_contract_leadtime_non_physical", "layer": "gold", "built_from": ["fact_enriched", "contract_dim"], "built_at": "2026-07-30T16:33:40.246890+00:00", "rows": 6, "columns": ["Contract", "Avg_Lead_Time", "Closed_Count"]}, {"table": "gold_contract_leadtime_physical", "layer": "gold", "built_from": ["fact_enriched", "contract_dim"], "built_at": "2026-07-30T16:33:39.787507+00:00", "rows": 6, "columns": ["Contract", "Avg_Lead_Time", "Closed_Count"]}, {"table": "gold_contract_stagnation_non_physical", "layer": "gold", "built_from": ["fact_enriched", "contract_dim"], "built_at": "2026-07-30T16:33:41.160803+00:00", "rows": 6, "columns": ["Contract", "Total_Score", "Total_Open", "Avg_Age"]}, {"table": "gold_contract_stagnation_physical", "layer": "gold", "built_from": ["fact_enriched", "contract_dim"], "built_at": "2026-07-30T16:33:40.693487+00:00", "rows": 6, "columns": ["Contract", "Total_Score", "Total_Open", "Avg_Age"]}, {"table": "gold_master_action_list", "layer": "gold", "built_from": ["fact_enriched"], "built_at": "2026-07-30T16:13:23.872892+00:00", "rows": 708, "columns": ["ChangeID", "Level", "Physical_Impacts", "Driving System", "Milestone", "Need Date", "Days to Need Date", "Risk"]}, {"table": "gold_overdue_changes", "layer": "gold", "built_from": ["fact_enriched"], "built_at": "2026-07-30T16:13:09.629328+00:00", "rows": 671, "columns": ["ChangeID", "Level", "Impact Type", "Status", "Date Opened", "Date Closed", "Actual Need Date", "Days to Close", "Days Overdue", "Overdue Band", "Raised Late", "Driving Milestone", "Driving System"]}, {"table": "gold_system_non_physical", "layer": "gold", "built_from": ["fact_enriched"], "built_at": "2026-07-30T16:13:23.859902+00:00", "rows": 26, "columns": ["Milestone", "Target Date", "System", "Open Changes", "L1", "L2", "L3", "Days to Milestone", "Closures/Week", "Risk", "Stagnation_Score", "Current_Rate_Weekly", "On_Track", "Combined_Risk"]}, {"table": "gold_system_physical", "layer": "gold", "built_from": ["fact_enriched"], "built_at": "2026-07-30T16:13:23.855513+00:00", "rows": 26, "columns": ["Milestone", "Target Date", "System", "Open Changes", "L1", "L2", "L3", "Days to Milestone", "Closures/Week", "Risk", "Stagnation_Score", "Current_Rate_Weekly", "On_Track", "Combined_Risk"]}, {"table": "gold_zonetype_leadtime_non_physical", "layer": "gold", "built_from": ["fact_location_exploded"], "built_at": "2026-07-30T16:33:47.684169+00:00", "rows": 5, "columns": ["Zone_Type", "Avg_Lead_Time", "Closed_Count"]}, {"table": "gold_zonetype_leadtime_physical", "layer": "gold", "built_from": ["fact_location_exploded"], "built_at": "2026-07-30T16:33:47.252686+00:00", "rows": 5, "columns": ["Zone_Type", "Avg_Lead_Time", "Closed_Count"]}, {"table": "gold_zonetype_stagnation_non_physical", "layer": "gold", "built_from": ["fact_location_exploded"], "built_at": "2026-07-30T16:33:48.504289+00:00", "rows": 5, "columns": ["Zone_Type", "Total_Score", "Total_Open", "Avg_Age"]}, {"table": "gold_zonetype_stagnation_physical", "layer": "gold", "built_from": ["fact_location_exploded"], "built_at": "2026-07-30T16:33:48.098789+00:00", "rows": 5, "columns": ["Zone_Type", "Total_Score", "Total_Open", "Avg_Age"]}];
+  const tbody = document.getElementById('table-body');
+  for (const m of data) {
+    const tr = document.createElement('tr');
+    const sources = m.built_from.length
+      ? m.built_from.map(s => `<span class="src">${s}</span>`).join('')
+      : '<span style="color:var(--ink-dim)">— origin —</span>';
+    tr.innerHTML = `<td><span class="pill ${m.layer}">${m.layer}</span></td>
+      <td class="name">${m.table}</td>
+      <td class="rows">${m.rows.toLocaleString()}</td>
+      <td class="sources">${sources}</td>`;
+    tbody.appendChild(tr);
+  }
+</script>
+</body></html>

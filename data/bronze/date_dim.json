@@ -1,0 +1,13 @@
+{
+  "table": "date_dim",
+  "layer": "bronze",
+  "built_from": [],
+  "built_at": "2026-07-30T14:16:41.619593+00:00",
+  "rows": 2556,
+  "columns": [
+    "Date",
+    "Date_Key",
+    "Year",
+    "Month_Name"
+  ]
+}

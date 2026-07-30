@@ -1,0 +1,12 @@
+{
+  "table": "commissioning_milestones",
+  "layer": "bronze",
+  "built_from": [],
+  "built_at": "2026-07-30T14:16:41.606537+00:00",
+  "rows": 4,
+  "columns": [
+    "Milestone_ID",
+    "Milestone_Name",
+    "Project_Target_Date"
+  ]
+}

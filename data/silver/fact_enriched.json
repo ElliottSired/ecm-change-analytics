@@ -1,0 +1,35 @@
+{
+  "table": "fact_enriched",
+  "layer": "silver",
+  "built_from": [
+    "fact_table",
+    "contract_dim",
+    "commissioning_milestones",
+    "systems_master"
+  ],
+  "built_at": "2026-07-30T16:12:53.343996+00:00",
+  "rows": 15000,
+  "columns": [
+    "ChangeID",
+    "AssumedMilestone",
+    "Level",
+    "DateOpened",
+    "DateValidated",
+    "DateClosed",
+    "TargetClosureDate",
+    "Status",
+    "SystemsImpacted",
+    "Reason",
+    "PotentialConsequences",
+    "Physical_Impacts",
+    "Driving_System",
+    "Driving_Milestone",
+    "Milestone_Name",
+    "Milestone_Need_Date",
+    "Actual_Need_Date",
+    "Days_to_Close",
+    "Current_Age_Days",
+    "Days_Until_Need",
+    "Days_Overdue"
+  ]
+}

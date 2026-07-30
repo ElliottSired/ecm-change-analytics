@@ -1,0 +1,12 @@
+{
+  "table": "system_location_bridge",
+  "layer": "bronze",
+  "built_from": [],
+  "built_at": "2026-07-30T14:16:41.628121+00:00",
+  "rows": 36,
+  "columns": [
+    "SystemCode",
+    "Building_ID",
+    "Zone_ID"
+  ]
+}

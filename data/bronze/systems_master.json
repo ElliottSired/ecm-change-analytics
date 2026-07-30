@@ -1,0 +1,11 @@
+{
+  "table": "systems_master",
+  "layer": "bronze",
+  "built_from": [],
+  "built_at": "2026-07-30T14:16:41.611443+00:00",
+  "rows": 26,
+  "columns": [
+    "SystemCode",
+    "Milestone_ID"
+  ]
+}

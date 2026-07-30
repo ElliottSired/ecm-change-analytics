@@ -1,0 +1,12 @@
+{
+  "table": "building_dim",
+  "layer": "bronze",
+  "built_from": [],
+  "built_at": "2026-07-30T14:16:41.621168+00:00",
+  "rows": 10,
+  "columns": [
+    "Building_ID",
+    "Building_Name",
+    "Building_Type"
+  ]
+}

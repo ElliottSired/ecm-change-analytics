@@ -1,0 +1,14 @@
+{
+  "table": "gold_building_leadtime_non_physical",
+  "layer": "gold",
+  "built_from": [
+    "fact_location_exploded"
+  ],
+  "built_at": "2026-07-30T16:33:43.796925+00:00",
+  "rows": 9,
+  "columns": [
+    "Building_Name",
+    "Avg_Lead_Time",
+    "Closed_Count"
+  ]
+}

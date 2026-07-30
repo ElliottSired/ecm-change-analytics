@@ -1,0 +1,19 @@
+{
+  "table": "gold_master_action_list",
+  "layer": "gold",
+  "built_from": [
+    "fact_enriched"
+  ],
+  "built_at": "2026-07-30T16:13:23.872892+00:00",
+  "rows": 708,
+  "columns": [
+    "ChangeID",
+    "Level",
+    "Physical_Impacts",
+    "Driving System",
+    "Milestone",
+    "Need Date",
+    "Days to Need Date",
+    "Risk"
+  ]
+}

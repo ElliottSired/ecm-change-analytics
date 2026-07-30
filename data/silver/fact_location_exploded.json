@@ -1,0 +1,30 @@
+{
+  "table": "fact_location_exploded",
+  "layer": "silver",
+  "built_from": [
+    "fact_enriched",
+    "system_location_bridge",
+    "building_dim",
+    "zone_dim"
+  ],
+  "built_at": "2026-07-30T16:12:53.393975+00:00",
+  "rows": 37435,
+  "columns": [
+    "ChangeID",
+    "Status",
+    "Level",
+    "Physical_Impacts",
+    "AssumedMilestone",
+    "DateOpened",
+    "DateClosed",
+    "Current_Age_Days",
+    "Days_to_Close",
+    "SystemCode",
+    "Building_ID",
+    "Building_Name",
+    "Building_Type",
+    "Zone_ID",
+    "Zone_Name",
+    "Zone_Type"
+  ]
+}

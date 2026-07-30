@@ -1,0 +1,17 @@
+Zone_ID,Building_ID,Zone_Name,Zone_Type
+B01-Z1,B01,Containment,Restricted
+B01-Z2,B01,Primary Circuit,Restricted
+B01-Z3,B01,Auxiliary Systems,Controlled
+B02-Z1,B02,Turbine Deck,Operational
+B02-Z2,B02,Condenser Area,Operational
+B02-Z3,B02,Feed Water Area,Operational
+B03-Z1,B03,Main Control Room,Critical
+B03-Z2,B03,Cable Spreading Room,Controlled
+B03-Z3,B03,Battery Room,Controlled
+B04-Z1,B04,Switchgear Room,Controlled
+B04-Z2,B04,MCC Room,Controlled
+B05-Z1,B05,HVAC Plant Room,Operational
+B05-Z2,B05,Pipe Chase North,Operational
+B05-Z3,B05,Pipe Chase South,Operational
+B07-Z1,B07,Chemical Dosing,Operational
+B07-Z2,B07,Filter Hall,Operational

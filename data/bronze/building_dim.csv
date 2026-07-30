@@ -1,0 +1,11 @@
+Building_ID,Building_Name,Building_Type
+B01,Reactor Building,Nuclear
+B02,Turbine Hall,Generation
+B03,Control Building,Control
+B04,Electrical Building,Electrical
+B05,Auxiliary Building,Auxiliary
+B06,Diesel Generator House,Auxiliary
+B07,Water Treatment Plant,Civil
+B08,Cooling Tower,Mechanical
+B09,Waste Building,Civil
+B10,Administration Block,Admin

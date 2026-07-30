@@ -1,0 +1,13 @@
+{
+  "table": "zone_dim",
+  "layer": "bronze",
+  "built_from": [],
+  "built_at": "2026-07-30T14:16:41.622632+00:00",
+  "rows": 16,
+  "columns": [
+    "Zone_ID",
+    "Building_ID",
+    "Zone_Name",
+    "Zone_Type"
+  ]
+}
